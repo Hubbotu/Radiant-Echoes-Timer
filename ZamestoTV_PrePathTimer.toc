@@ -1,0 +1,11 @@
+## Interface: 110000
+## Title: ZamestoTV: Event Timer
+## Title-ruRU: ZamestoTV: Таймер событий
+## Notes: Prepatch game event timer
+## Notes-ruRU: Таймер игрового события препатча
+## Author: ZamestoTV
+## IconTexture: Interface\AddOns\ZamestoTV_PrePathTimer\Icons\goblin
+## Version: 1.3.0
+
+time.lua
+
