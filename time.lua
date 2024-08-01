@@ -5,10 +5,12 @@ local L = {
     enUS = {
         TIME_RUIN = "Event in progress",
         TIME_LEFT = "Before changing location",
+        NEXT_LOCATION = "Next location",
     },
     ruRU = {
         TIME_RUIN = "Событие идет",
         TIME_LEFT = "До смены локации",
+        NEXT_LOCATION = "Сл. локация",
     }
 }
 
@@ -53,7 +55,10 @@ local function UpdateTimer()
                 addonTable.timerFrame.textZone:SetPoint("TOP", addonTable.timerFrame, "TOP", 0, -20)
                 
                 addonTable.timerFrame.textTimer = addonTable.timerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-                addonTable.timerFrame.textTimer:SetPoint("CENTER", addonTable.timerFrame, "CENTER", 0, 0)
+                addonTable.timerFrame.textTimer:SetPoint("TOP", addonTable.timerFrame.textZone, "BOTTOM", 0, -5) -- Reduced vertical spacing
+
+                addonTable.timerFrame.nextLocationText = addonTable.timerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                addonTable.timerFrame.nextLocationText:SetPoint("TOP", addonTable.timerFrame.textTimer, "BOTTOM", 0, -5) -- Reduced vertical spacing
                 
                 addonTable.timerFrame.deleteButton = CreateFrame("Button", nil, addonTable.timerFrame, "UIPanelCloseButton")
                 addonTable.timerFrame.deleteButton:SetPoint("TOPRIGHT", addonTable.timerFrame, "TOPRIGHT")
@@ -65,8 +70,13 @@ local function UpdateTimer()
             addonTable.timerFrame.textZone:SetText(addonTable.currentZone)
             if addonTable.spawning then
                 addonTable.timerFrame.textTimer:SetText(string.format("%s: %02d:%02d:%02d", GetLocalizedString("TIME_RUIN"), hoursLeft, minutesLeft, secondsLeft))
+                addonTable.timerFrame.textTimer:SetTextColor(0, 1, 0) -- Light green color for "TIME_RUIN"
+                addonTable.timerFrame.textZone:SetTextColor(0, 1, 0) -- Light green color for "TIME_RUIN"
             else
                 addonTable.timerFrame.textTimer:SetText(string.format("%s: %02d:%02d:%02d", GetLocalizedString("TIME_LEFT"), hoursLeft, minutesLeft, secondsLeft))
+                addonTable.timerFrame.nextLocationText:SetText(string.format("%s: %s", GetLocalizedString("NEXT_LOCATION"), addonTable.nextZone))
+                addonTable.timerFrame.textTimer:SetTextColor(1, 1, 1) -- Default color for "TIME_LEFT"
+                addonTable.timerFrame.textZone:SetTextColor(1, 1, 1) -- Default color for "TIME_LEFT"
             end
         else
             if addonTable.timerFrame then
@@ -84,8 +94,8 @@ local function UpdateLocation()
     }
 
     local region_timers = {
-        NA = 1722409200, -- NA
-        US = 1722409200, -- US
+        NA = 1722432600, -- NA
+        US = 1722432600, -- US
         KR = 1722409200, -- KR
         EU = 1722409200, -- EU
         TW = nil, -- TW (Add TW timestamp if available)
@@ -103,7 +113,9 @@ local function UpdateLocation()
         local offset = not spawning and interval or 0
         local rotation_index = math.floor(start_timestamp / interval % #zone_rotation)
         local currentLocationID = zone_rotation[rotation_index + 1] -- Ensure the index starts from 1
+        local nextLocationID = zone_rotation[(rotation_index + 1) % #zone_rotation + 1] -- Next location index
         addonTable.currentZone = C_Map.GetMapInfo(currentLocationID).name
+        addonTable.nextZone = C_Map.GetMapInfo(nextLocationID).name
 
         addonTable.spawning = spawning
         if spawning then
@@ -120,6 +132,7 @@ end
 local function InitializeAddon()
     addonTable.states = {}
     addonTable.currentZone = ""
+    addonTable.nextZone = ""
     addonTable.timerEndTime = nil
     addonTable.spawning = false
 
@@ -139,7 +152,7 @@ end
 
 InitializeAddon()
 
-SLASH_ZAM4TIMER1 = "/zz"
+SLASH_ZAM4TIMER1 = "/zt"
 SlashCmdList.ZAM4TIMER = function(msg)
     if addonTable.timerFrame then
         addonTable.timerFrame.UserHidden = nil
