@@ -94,17 +94,17 @@ local function UpdateLocation()
     }
 
     local region_timers = {
-        NA = 1722432600, -- NA
-        US = 1722432600, -- US
-        KR = 1722409200, -- KR
-        EU = 1722409200, -- EU
+        NA = 1722585600, -- NA
+        US = 1722585600, -- US
+        KR = 1722578400, -- KR
+        EU = 1722578400, -- EU
         TW = nil, -- TW (Add TW timestamp if available)
     }
 
     local region_start_timestamp = region_timers[GetCVar("portal"):upper()]
     if region_start_timestamp then
         local duration = 600 -- Adjusted duration
-        local interval = 5400 -- Adjusted interval
+        local interval = 3600 -- Adjusted interval
         local start_timestamp = GetServerTime() - region_start_timestamp
         local next_event = interval - start_timestamp % interval
         local spawning = interval - next_event < duration

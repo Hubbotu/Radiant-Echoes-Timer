@@ -5,7 +5,8 @@
 ## Notes-ruRU: Таймер игрового события препатча
 ## Author: ZamestoTV
 ## IconTexture: Interface\AddOns\ZamestoTV_PrePathTimer\Icons\goblin
-## Version: 1.4.5
+## Version: 1.6.0
 
 time.lua
-
+Quest.lua
+Track.lua
